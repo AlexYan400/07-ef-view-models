@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using LuckySpin.Models;
 using LuckySpin.ViewModels;
 using LuckySpin.Services;
@@ -7,99 +8,136 @@ namespace LuckySpin.Controllers
 {
     public class SpinnerController : Controller
     {
-        //DIJ Repository and DbContext objects
-        private LuckySpinContext _dbContext; // the database context provides access to the database records for Players and Games
-        private Repository _repository; // the repository provides access to the Games Spins
-        //Constructor with DIJ Repository object
+        // DIJ Repository and DbContext objects
+        private readonly LuckySpinContext _dbContext;   // database access for Players/Games/Spins
+        private readonly Repository _repository;        // helper access for getting a Game with Spins
+
         public SpinnerController(LuckySpinContext dbContext, Repository repository)
         {
-            // (3) saves the DIJ Repository objects into your instance variables
             _dbContext = dbContext;
             _repository = repository;
         }
+
         /***
          * Index Action (GET and POST)
-         **/
+         ***/
         [HttpGet]
         public IActionResult Index()
         {
-                return View();
+            return View();
         }
+
         [HttpPost]
         public IActionResult Index(Player player)
         {
-            if(!ModelState.IsValid) { return View(); }
+            if (!ModelState.IsValid)
+            {
+                return View(player);
+            }
 
-            //Stores the player in the repository
+            // Save new player + create a new game
             _dbContext.Players.Add(player);
-            var game = new Game(){ 
+
+            var game = new Game()
+            {
                 Player = player
             };
+
             _dbContext.Games.Add(game);
-            _dbContext.SaveChanges(); //Only after saving changes to the database will the Game have an Id, which is needed to link the Game to the Spins in the next Action
-    
-            return RedirectToAction("Spin", new{gameId = game.Id}); //Redirect to the Spin Action, passing the Game as a parameter
+            _dbContext.SaveChanges(); // game.Id exists after this
+
+            return RedirectToAction("Spin", new { gameId = game.Id });
         }
 
         /***
-         * Spin Action (GET only, no data from the View)
-         **/       
+         * Spin Action (GET only)
+         ***/
+        [HttpGet]
         public IActionResult Spin(int gameId)
         {
-            Game Game = _repository.getGame(gameId); // Get the Game from the repository to ensure you have the most up to date version of the Game with all the Spins
-            //Spin away!
-            Spin spin = new Spin() { Game = Game, GameId = Game.Id }; //Creates a new Spin, setting the Game and GameId properties to link it to the current Game
-            Game.PlayTurn(spin);
-            Game.Spins.Add(spin);
+            Game game = _repository.getGame(gameId); // should include Player + Spins
+
+            // Create spin linked to game
+            Spin spin = new Spin() { GameId = game.Id };
+
+            // Apply game logic and store the spin
+            game.PlayTurn(spin);
+            game.Spins.Add(spin);
+
+            // ✅ IMPORTANT: ensure the spin is tracked/inserted
+            _dbContext.Set<Spin>().Add(spin);
             _dbContext.SaveChanges();
 
-            //Checks to see if the game is done, if not keep spinning
-            //  if so, redirect to the LuckList Action to show the list of spins
-            if (Game.Status != GameStatus.GameOver)
+            // Keep playing until game over
+            if (game.Status != GameStatus.GameOver)
             {
-                return View("Spin", Game); //Keep Playing
+                return View("Spin", game);
             }
-            
-            return RedirectToAction("LuckList", new {gameId = gameId}); 
+
+            return RedirectToAction("LuckList", new { gameId = gameId });
         }
 
         /***
-         * ListSpins Action (Get only, no data from the View)
-         **/
+         * LuckList Action (GET only)
+         ***/
         [HttpGet]
         public IActionResult LuckList(int gameId)
         {
-             // Passes the repository to the View to display the game results
             return View(_repository.getGame(gameId));
         }
 
-            /***
-            * PlayersChoice Action (GET and POST)
-            **/
+        /***
+         * PlayersChoice Action (GET and POST)
+         ***/
         [HttpGet]
         public IActionResult PlayersChoice()
         {
-            PlayersChoice playersChoice = new PlayersChoice()
+            PlayersChoice vm = new PlayersChoice()
             {
-                //TODO: Pull data from the database for the properties of the view model.
+                Players = _dbContext.Players
+                    .OrderBy(p => p.FirstName)
+                    .ThenBy(p => p.Luck)
+                    .ToList(),
 
+                Games = _dbContext.Games
+                    .Include(g => g.Player)
+                    .Include(g => g.Spins)
+                    .OrderByDescending(g => g.Spins.Count)
+                    .ToList()
             };
-            return View(playersChoice);
-       
+
+            return View(vm);
         }
+
         [HttpPost]
         public IActionResult PlayersChoice(int SelectedPlayerId)
         {
+            if (SelectedPlayerId <= 0)
+            {
+                return RedirectToAction("PlayersChoice");
+            }
+
             Player? player = _dbContext.Players.Find(SelectedPlayerId);
-            //TODO: Use ModelState validation instead of the null check below
-            if (player == null) { return RedirectToAction("PlayersChoice"); } 
-            //Gift Balance for returning Players
-            if (player.Balance == 0) { player.Balance = 5.0m; }
 
-            //TODO: Create a new Game for the selected Player, save it to the database, and redirect to the Spin Action to start playing with the Game ID
-            return RedirectToAction("PlayersChoice");
+            // TODO in assignment: use ModelState validation instead of null checks
+            if (player == null)
+            {
+                return RedirectToAction("PlayersChoice");
+            }
+
+            // Start a new game with selected player and $5 balance
+            player.Balance = 5.0m;
+
+            Game game = new Game()
+            {
+                PlayerId = player.Id,
+                Player = player
+            };
+
+            _dbContext.Games.Add(game);
+            _dbContext.SaveChanges();
+
+            return RedirectToAction("Spin", new { gameId = game.Id });
         }
-
     }
 }
-

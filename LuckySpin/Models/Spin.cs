@@ -1,38 +1,46 @@
 ﻿using System;
 using System.Linq;
+
 namespace LuckySpin.Models
 {
     public class Spin
     {
-        //Instance Variables
+        // Instance Variables
         Random random = new Random();
-        private int[] numbers; //a spin array;
+        private int[] numbers;
 
-        //Constructor
+        // Constructor
         public Spin()
         {
-            numbers = new int[] { random.Next(10), random.Next(10), random.Next(10) };
+            numbers = new int[] 
+            { 
+                random.Next(10), 
+                random.Next(10), 
+                random.Next(10) 
+            };
         }
 
-        //Model Properties
+        // Model Properties
         public int Id { get; set; }
-        public decimal RunningBalance { get; set; }   
-        public int[] Numbers //the spin numbers are set in the constructor
-        { 
-            //TODO: Uncomment the line below to Change the Model - adding the set accessor makes the DbContext take note of this as a column.
-            //set { numbers = value; } 
-            get { return numbers; }
-        } 
+        public decimal RunningBalance { get; set; }
 
-        //Navigation properties
-        public int GameId { get; set; } //Foreign Key to the Game who made this Spin
-        public Game Game { get; set; } //Navigation property to the Game that contains this Spin
-     
-        //Spin Method   
-        public bool isWinning(Player player) //true if Player's Luck is one of the numbers
+        public int[] Numbers
         {
-            return (player == null) ?  false : numbers.Contains(player.Luck);
+            get { return numbers; }
+            set { numbers = value; }   // ✅ THIS was the missing piece
+        }
+
+        // Navigation Properties
+        public int GameId { get; set; }
+        public Game Game { get; set; }
+
+        // Spin Method
+        public bool isWinning(Player player)
+        {
+            return (player == null) 
+                ? false 
+                : numbers.Contains(player.Luck);
         }
     }
-
 }
+

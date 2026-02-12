@@ -1,34 +1,51 @@
 @model LuckySpin.ViewModels.PlayersChoice
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 @using LuckySpin.Models;
+
 @{
     Layout = "_Layout";
-    //TODO: After getting the other TODOs complete and running.
-    //Uncomment the lines below (one at a time) and see how the Players and Games are ordered in the ViewModel
-    //Model.Players = Model.Players.OrderBy(p => p.FirstName).ThenBy(p => p.Luck).ToList();
-    //Model.Games = Model.Games.OrderByDescending(g => g.Spins.Count).ToList();
 }
 
-<h1>Lucky Spin</h1> 
-<h2>Players Choice</h2> 
+<h1>Lucky Spin</h1>
+<h2>Players Choice</h2>
+
 <form asp-action="PlayersChoice" asp-controller="Spinner" method="post">
-<fieldset>
-    <label>
-        <!-- TODO: Create a dropdown list of Players to choose from, displaying their name and luck number. 
-        (see the Index view for an example of how to do this with tag helpers) -->
-       
+    <fieldset>
+        <label>Select a Player:</label>
 
-    </label>
-</fieldset>
-<input type="submit" value="Play Game" />
+        <select asp-for="SelectedPlayerId">
+            <option value="">-- Choose a player --</option>
+            @foreach (Player p in Model.Players)
+            {
+                <option value="@p.Id">
+                    @p.FirstName (Luck: @p.Luck)
+                </option>
+            }
+        </select>
+    </fieldset>
+
+    <input type="submit" value="Play Game" />
 </form>
+
 <hr />
-    <h2>Best Previous Games</h2>
-    <table>
-    <thead><tr><th>Game</th><th>Player</th><th>Number of Spins</th></tr></thead>
+
+<h2>Best Previous Games</h2>
+<table>
+    <thead>
+        <tr>
+            <th>Game</th>
+            <th>Player</th>
+            <th>Number of Spins</th>
+        </tr>
+    </thead>
     <tbody>
-        <!--TODO: display this list of games with the info above (remember Games has an iCollection of Spins) -->
-
-    </tdbody>
-    </table>
-
+        @foreach (Game g in Model.Games)
+        {
+            <tr>
+                <td>@g.Id</td>
+                <td>@g.Player?.FirstName</td>
+                <td>@(g.Spins?.Count ?? 0)</td>
+            </tr>
+        }
+    </tbody>
+</table>
