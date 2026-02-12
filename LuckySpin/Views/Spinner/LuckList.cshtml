@@ -1,0 +1,22 @@
+﻿@model LuckySpin.Models.Game;
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@{
+    Layout = "_Layout";
+}
+<h1>Out of Luck, @Model.Player?.FirstName</h1>
+<a asp-action="PlayersChoice">Start New Game</a>
+<h2>Here is a list of your spins:</h2>
+<table>
+    <thead><tr><th>Spin</th><th>Winner</th><th>Balance</th></tr></thead>
+    <tbody>
+        <!--Displays the running balance for each spin -->
+        @foreach (LuckySpin.Models.Spin spin in Model.Spins)
+            {
+            <tr>
+                <td>@spin.Numbers[0], @spin.Numbers[1], @spin.Numbers[2]</td>
+                <td>@(spin.isWinning(@Model.Player) ? "Win" : "Lose")</td>
+                <td>@spin.RunningBalance</td> 
+            </tr>
+        }
+    </tbody>
+</table>

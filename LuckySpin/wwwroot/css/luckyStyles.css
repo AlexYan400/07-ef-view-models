@@ -1,0 +1,168 @@
+﻿body{
+    background-color:khaki;
+}
+h1 {
+    font-family: Cambria, Cochin, Georgia, Times, Times New Roman, serif;
+    font-size: 2.5em;
+    margin: .3em 0;
+}
+h2 {
+    margin-left:0.8em;
+    color:#611;
+}
+div {
+       display:inline-block;
+       width:35px;
+       font-family:Cambria, Cochin, Georgia, Times, Times New Roman, serif;
+       font-size:2em;
+       font-weight:bold;
+       background-color:lightyellow;
+       border:solid thin;
+       border-color:darkgoldenrod;
+       padding:5px;
+       margin:2px;
+       text-align:center;
+}
+div#balance {
+    display: block;
+    font-size: 1.2em;
+    width: fit-content;
+    padding: .2em .5em;
+    margin: .5em 0;
+}
+input:not([type]), input[type='text'], input[type='password'], option {
+    border-radius: 8px;
+    border: solid 2px rosybrown;
+    font-size: 1em;
+}
+
+button, [type="submit"] {
+    font-size: 1.5em;
+    border-radius: 10px;
+    border: solid 2px rosybrown;
+    background-color: firebrick;
+    color: beige;
+}
+fieldset {
+    display: block;
+    width: 200px;
+    border: solid medium darkred;
+    background-color: #CC9999;
+    margin: 0 0 .5em 1em;
+}
+fieldset > label {
+        display: block;
+        margin: .8em 0;
+}
+img {
+    border: dotted .5em darkred;
+    border-top-left-radius: 50% 50%;
+    border-top-right-radius: 50% 50%;
+    border-bottom-right-radius: 50% 50%;
+    border-bottom-left-radius: 50% 50%;
+    width:140px;
+    margin-left:20px;
+}
+
+.field-validation-error {
+    font-size: .8em;
+    font-family: Arial Black,Arial,sans-serif;
+    color: darkred;
+    display: inline-block;
+    text-align: center;
+    width: 100%;
+}
+
+thead {
+    font-family: Arial,sans-serif;
+    font-weight: bold;
+    color: darkred;
+    font-size: 1.2em;
+}
+
+th {
+    border-bottom: solid thin darkred;
+    padding: 0 1em;
+}
+
+td {
+    text-align: center;
+    padding: 0.3em 0;
+}
+
+/*!
+ * animate.css -http://daneden.me/animate
+ * Version - 3.7.0
+ * Licensed under the MIT license - http://opensource.org/licenses/MIT
+ *
+ * Copyright (c) 2018 Daniel Eden
+ */
+
+@-webkit-keyframes bounce {
+    from, 20%, 53%, 80%, to {
+        -webkit-animation-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
+        animation-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
+        -webkit-transform: translate3d(0, 0, 0);
+        transform: translate3d(0, 0, 0);
+    }
+
+    40%, 43% {
+        -webkit-animation-timing-function: cubic-bezier(0.755, 0.05, 0.855, 0.06);
+        animation-timing-function: cubic-bezier(0.755, 0.05, 0.855, 0.06);
+        -webkit-transform: translate3d(0, -30px, 0);
+        transform: translate3d(0, -30px, 0);
+    }
+
+    70% {
+        -webkit-animation-timing-function: cubic-bezier(0.755, 0.05, 0.855, 0.06);
+        animation-timing-function: cubic-bezier(0.755, 0.05, 0.855, 0.06);
+        -webkit-transform: translate3d(0, -15px, 0);
+        transform: translate3d(0, -15px, 0);
+    }
+
+    90% {
+        -webkit-transform: translate3d(0, -4px, 0);
+        transform: translate3d(0, -4px, 0);
+    }
+}
+
+@keyframes bounce {
+    from, 20%, 53%, 80%, to {
+        -webkit-animation-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
+        animation-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
+        -webkit-transform: translate3d(0, 0, 0);
+        transform: translate3d(0, 0, 0);
+    }
+
+    40%, 43% {
+        -webkit-animation-timing-function: cubic-bezier(0.755, 0.05, 0.855, 0.06);
+        animation-timing-function: cubic-bezier(0.755, 0.05, 0.855, 0.06);
+        -webkit-transform: translate3d(0, -30px, 0);
+        transform: translate3d(0, -30px, 0);
+    }
+
+    70% {
+        -webkit-animation-timing-function: cubic-bezier(0.755, 0.05, 0.855, 0.06);
+        animation-timing-function: cubic-bezier(0.755, 0.05, 0.855, 0.06);
+        -webkit-transform: translate3d(0, -15px, 0);
+        transform: translate3d(0, -15px, 0);
+    }
+
+    90% {
+        -webkit-transform: translate3d(0, -4px, 0);
+        transform: translate3d(0, -4px, 0);
+    }
+}
+
+.bounce {
+    -webkit-animation-name: bounce;
+    animation-name: bounce;
+    -webkit-transform-origin: center bottom;
+    transform-origin: center bottom;
+}
+.animated {
+    -webkit-animation-duration: 1s;
+    animation-duration: 1s;
+    -webkit-animation-fill-mode: both;
+    animation-fill-mode: both;
+}

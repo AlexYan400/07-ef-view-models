@@ -1,0 +1,16 @@
+﻿@model LuckySpin.Models.Game
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@inject LuckySpin.Services.TextTransform TTransform
+@{
+    Layout = "_Layout";
+    string Display = Model.Status == LuckySpin.Models.GameStatus.Won ? "display:block" : "display : none";
+    LuckySpin.Models.Spin spin = Model.Spins.LastOrDefault() ?? new LuckySpin.Models.Spin();
+    //int[] numbers = spins.LastOrDefault()?.Numbers ?? new int[] { 0, 0, 0 };
+}
+<h1>Lucky Spin</h1>
+<button onclick='history.go(0)'>Spin</button> <div>@spin.Numbers[0]</div><div>@spin.Numbers[1]</div><div>@spin.Numbers[2]</div>
+<div id="balance">Running Balance: @Model.Player.Balance </div>
+<span style="@Display">
+    <h2>Congratulations, @Model.Player.FirstName<br/>You Win with Lucky @TTransform.numberToText(Model.Player.Luck)!</h2>
+    <img src="/Images/LuckySpinCoins.jpg" class="animated bounce" alt="Coins" />
+</span>

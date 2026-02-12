@@ -1,0 +1,37 @@
+﻿@model LuckySpin.Models.Player
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@{
+    Layout = "_Layout";
+}
+<h1>Lucky Spin</h1>
+<h2>Pick your Number</h2>
+<form asp-action="Index" asp-controller="Spinner">
+    <fieldset>
+        <label>
+            <input asp-for="FirstName" placeholder=" Your First Name" />
+            <span asp-validation-for="FirstName"></span>
+        </label>
+        <label>
+            <select asp-for="Luck">
+                <option selected disabled>Luck Number</option>
+                <option>1</option>
+                <option>2</option>
+                <option>3</option>
+                <option>4</option>
+                <option>5</option>
+                <option>6</option>
+                <option>7</option>
+                <option>8</option>
+                <option>9</option>
+                <option>10</option>
+            </select>
+            <span asp-validation-for="Luck"></span>
+        </label>
+           <!-- Adds a new input field for the starting bet tag helpers to connect it to the Model and manage display -->
+         <label>
+            <input asp-for="Balance" placeholder=" 3 to 10"/>
+            <span asp-validation-for="Balance"></span>
+        </label>
+    </fieldset>
+    <input type="submit" value="Start Betting" />
+</form>
